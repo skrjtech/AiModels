@@ -1,0 +1,39 @@
+
+version: '3.9'
+services:
+  aimodel:
+    # build: 
+    #   context: .docker/
+    #   dockerfile: Dockerfile
+    image: skrjtech/aimodel:latest
+    container_name: aimodel
+    tty: true
+    restart: always
+    environment:
+      - DISPLAY=$DISPLAY
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ..:/ws
+      - pycharm_volume:/tmp/pycharm
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  
+  # pycharm:
+  #   image: skrjtech/pycharm:debian
+  #   container_name: pycharm_container
+  #   tty: true
+  #   restart: always
+  #   volumes:
+  #     - type: volume
+  #       source: pycharm_volume
+  #       target: /tmp/pycharm
+  #   depends_on:
+  #     - aimodel
+
+volumes:
+  pycharm_volume:
